@@ -256,21 +256,17 @@
   }
 
   .hero-stats {
-    position: absolute;
-    left: 48px;
-    bottom: 80px;
     display: flex;
-    flex-direction: column;
-    gap: 24px;
+    flex-direction: row;
+    gap: 40px;
+    margin-top: 48px;
     opacity: 0;
-    animation: fade-left 0.8s 1.1s forwards;
+    animation: fade-up 0.8s 1.1s forwards;
   }
   .stat-item {
     text-align: left;
     border-left: 2px solid var(--border);
-    border-right: none;
     padding-left: 20px;
-    padding-right: 0;
   }
   .stat-num {
     font-family: 'Bebas Neue', sans-serif;
@@ -1011,6 +1007,21 @@
       <a href="https://github.com/anil101-thom" class="btn btn-primary" target="_blank">⬡ GitHub</a>
       <a href="mailto:anilthomas0601@gmail.com" class="btn btn-ghost">✉ Contact</a>
     </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">99.8<span style="font-size:18px;color:var(--text-dim)">%</span></div>
+        <div class="stat-label">Anomaly Detection Acc.</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Live GitHub Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">10K<span style="font-size:18px;color:var(--text-dim)">+</span></div>
+        <div class="stat-label">IoT Records Processed</div>
+      </div>
+    </div>
   </div>
 
 
@@ -1021,20 +1032,6 @@
     </div>
   </div>
 
-  <div class="hero-stats">
-    <div class="stat-item">
-      <div class="stat-num">99.8<span style="font-size:18px;color:var(--text-dim)">%</span></div>
-      <div class="stat-label">Anomaly Detection Acc.</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">4</div>
-      <div class="stat-label">Live GitHub Projects</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">10K<span style="font-size:18px;color:var(--text-dim)">+</span></div>
-      <div class="stat-label">IoT Records Processed</div>
-    </div>
-  </div>
 
   <div class="scroll-hint">
     <span>Scroll</span>
