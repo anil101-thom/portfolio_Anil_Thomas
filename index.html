@@ -43,6 +43,12 @@
     cursor: none;
   }
 
+  /* Restore default cursor on touch/mobile — custom cursor is mouse-only */
+  @media (hover: none), (pointer: coarse) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none !important; }
+  }
+
   /* CUSTOM CURSOR */
   .cursor {
     position: fixed;
@@ -1375,6 +1381,65 @@
     100% { background-position: 200% center; }
   }
 
+  /* ═══ WCAG CONTRAST — boost dim text to AA ═══ */
+  .text-dim, .exp-date, .nav-links a, .section-num, .skill-name,
+  .exp-company, .project-desc, .metric-label, .stat-label,
+  .contact-link-label, .hero-tag {
+    color: #6a8faf; /* from #4a6a88 → improved contrast ratio */
+  }
+
+  /* ═══ PERFORMANCE — reduce motion for users who prefer it ═══ */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .hero-bg-orb { animation: none !important; }
+    .scroll-line { animation: none !important; }
+    .glitch { animation: none !important; }
+  }
+
+  /* ═══ PERFORMANCE — reduce heavy effects on mobile ═══ */
+  @media (max-width: 768px) {
+    .hero-bg-orb { filter: blur(60px); opacity: 0.5; }
+    body::before { opacity: 0.2; }
+    body::after { display: none; }
+    #particles { display: none; }
+    nav { padding: 16px 20px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 10px; letter-spacing: 1px; }
+    #hero { padding: 100px 20px 60px; }
+    #skills, #experience, #projects, #contact, #inquiry { padding: 80px 20px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ═══ GERMAN LANGUAGE TOGGLE ═══ */
+  #lang-toggle {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 1001;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  #lang-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: var(--glow);
+  }
+  [lang="de"] .en-only { display: none; }
+  [lang="en"] .de-only { display: none; }
+
 </style>
 </head>
 <body>
@@ -1382,6 +1447,9 @@
 <canvas id="particles"></canvas>
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Language Toggle -->
+<button id="lang-toggle" onclick="toggleLang()" aria-label="Toggle language / Sprache wechseln">🇩🇪 DE / EN</button>
 
 <!-- NAV -->
 <nav>
@@ -1403,13 +1471,21 @@
   <div class="hero-bg-orb orb2"></div>
 
   <div class="hero-content">
-    <div class="hero-tag">Data Scientist · ML Engineer · Data Analyst</div>
+    <div class="hero-tag">
+      <span class="en-only">Data Scientist · ML Engineer · Data Analyst</span>
+      <span class="de-only">Datenwissenschaftler · ML-Ingenieur · Datenanalyst</span>
+    </div>
     <h1 class="hero-name glitch">
       ANIL<span class="accent">_</span><br>
       <span class="line2">THOMAS</span>
     </h1>
     <p class="hero-desc">
-      <strong>Data Scientist & ML Engineer</strong> — bridging hardware domain expertise with data intelligence to drive measurable business outcomes. Reduced equipment downtime, cut evaluation time by <strong>30%</strong>, and delivered end-to-end ML pipelines for <strong>anomaly detection</strong>, <strong>energy forecasting</strong>, and <strong>conflict analytics</strong>. Collaborative communicator adaptable to cross-cultural teams — English fluent, German A2 and growing, targeting roles where hardware meets data.
+      <span class="en-only">
+        <strong>Data Scientist & ML Engineer</strong> — bridging hardware domain expertise with data intelligence to drive measurable business outcomes. Reduced equipment downtime, cut evaluation time by <strong>30%</strong>, and delivered end-to-end ML pipelines for <strong>anomaly detection</strong>, <strong>energy forecasting</strong>, and <strong>conflict analytics</strong>. Collaborative communicator adaptable to cross-cultural teams — English fluent, German A2 and growing, targeting roles where hardware meets data.
+      </span>
+      <span class="de-only">
+        <strong>Datenwissenschaftler & ML-Ingenieur</strong> — Verbindung von Hardware-Fachwissen mit datengesteuerter Intelligenz für messbare Geschäftsergebnisse. Geräteausfälle reduziert, Evaluierungszeit um <strong>30 %</strong> verkürzt, End-to-End-ML-Pipelines für <strong>Anomalieerkennung</strong>, <strong>Energieprognosen</strong> und <strong>Konfliktanalysen</strong> entwickelt. Englisch fließend, Deutsch A2 (B1 in Bearbeitung) — auf der Suche nach Stellen, wo Hardware auf Daten trifft.
+      </span>
     </p>
     <div class="hero-cta">
       <a href="https://github.com/anil101-thom" class="btn btn-primary" target="_blank">⬡ GitHub</a>
@@ -1732,6 +1808,11 @@
           Ingesting multi-source OSINT feeds, NLP-driven event classification, and risk-scoring pipelines 
           to forecast regional instability before it escalates.
         </div>
+        <ul class="exp-list" style="margin-bottom:16px;">
+          <li>NLP pipeline classifying <strong>geopolitical events</strong> from multi-source OSINT feeds with custom risk-scoring model</li>
+          <li>Streamlit dashboard enabling <strong>real-time regional instability monitoring</strong> with visual heat-maps</li>
+          <li>Demonstrates applied ML for <strong>high-stakes decision support</strong> — relevant to defence, finance, and policy sectors</li>
+        </ul>
         <div class="project-stack">
           <span class="stack-tag">Python</span>
           <span class="stack-tag">NLP</span>
@@ -1849,6 +1930,16 @@
         <div class="project-desc">
           9 EDA visualisations across departments, age, gender, overtime & work-life balance. Key finding: overtime + young single employees drive highest attrition.
         </div>
+        <div class="project-metrics">
+          <div class="metric">
+            <div class="metric-val">9</div>
+            <div class="metric-label">EDA Charts</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val">1,470</div>
+            <div class="metric-label">Employee Records</div>
+          </div>
+        </div>
         <div class="project-stack">
           <span class="stack-tag">Pandas</span><span class="stack-tag">Matplotlib</span><span class="stack-tag">Seaborn</span><span class="stack-tag">EDA</span>
         </div>
@@ -1944,7 +2035,7 @@
     </div>
 
     <div class="contact-links">
-      <a href="mailto:anilthomas0601@gmail.com" class="contact-link">
+      <a href="mailto:anilthomas0601@gmail.com" class="contact-link" aria-label="Send email to Anil Thomas">
         <span class="contact-link-icon">✉</span>
         <div>
           <div class="contact-link-label">Email</div>
@@ -1952,7 +2043,7 @@
         </div>
         <span class="contact-link-arrow">→</span>
       </a>
-      <a href="https://github.com/anil101-thom" class="contact-link" target="_blank">
+      <a href="https://github.com/anil101-thom" class="contact-link" target="_blank" rel="noopener" aria-label="Anil Thomas on GitHub">
         <span class="contact-link-icon">⬡</span>
         <div>
           <div class="contact-link-label">GitHub</div>
@@ -1960,7 +2051,7 @@
         </div>
         <span class="contact-link-arrow">→</span>
       </a>
-      <a href="https://linkedin.com/in/anil-thomas-59354b386" class="contact-link" target="_blank">
+      <a href="https://linkedin.com/in/anil-thomas-59354b386" class="contact-link" target="_blank" rel="noopener" aria-label="Anil Thomas on LinkedIn">
         <span class="contact-link-icon">🔗</span>
         <div>
           <div class="contact-link-label">LinkedIn</div>
@@ -1995,38 +2086,64 @@
 </footer>
 
 <script>
-  // CURSOR
+  // CURSOR — only on non-touch devices
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
+  const isTouchDevice = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
   let mx = 0, my = 0, rx = 0, ry = 0;
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 4 + 'px';
-    cursor.style.top = my - 4 + 'px';
-  });
+  if (!isTouchDevice) {
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 4 + 'px';
+      cursor.style.top = my - 4 + 'px';
+    });
 
-  function animateRing() {
-    rx += (mx - rx - 16) * 0.12;
-    ry += (my - ry - 16) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+    function animateRing() {
+      rx += (mx - rx - 16) * 0.12;
+      ry += (my - ry - 16) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .project-card, .skill-card, .contact-link').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2.5)';
+        ring.style.width = '48px';
+        ring.style.height = '48px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        ring.style.width = '32px';
+        ring.style.height = '32px';
+      });
+    });
+
+    // PARALLAX ORBS — only on desktop
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      document.querySelector('.orb1').style.transform = `translate(${x}px, ${y}px)`;
+      document.querySelector('.orb2').style.transform = `translate(${-x * 0.5}px, ${-y * 0.5}px)`;
+    });
   }
-  animateRing();
 
-  document.querySelectorAll('a, button, .project-card, .skill-card, .contact-link').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform = 'scale(2.5)';
-      ring.style.width = '48px';
-      ring.style.height = '48px';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.transform = 'scale(1)';
-      ring.style.width = '32px';
-      ring.style.height = '32px';
-    });
-  });
+  // LANGUAGE TOGGLE
+  function toggleLang() {
+    const html = document.documentElement;
+    const btn = document.getElementById('lang-toggle');
+    if (html.lang === 'de') {
+      html.lang = 'en';
+      btn.textContent = '🇩🇪 DE / EN';
+    } else {
+      html.lang = 'de';
+      btn.textContent = '🇬🇧 EN / DE';
+    }
+  }
+  document.documentElement.lang = 'en';
 
   // SCROLL REVEAL
   const revealEls = document.querySelectorAll('.skill-card, .exp-item, .project-card');
@@ -2090,14 +2207,6 @@
   });
   document.querySelector('.hero-stats') && statsObs.observe(document.querySelector('.hero-stats'));
 
-  // PARALLAX ORBS
-  document.addEventListener('mousemove', e => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 20;
-    const y = (e.clientY / window.innerHeight - 0.5) * 20;
-    document.querySelector('.orb1').style.transform = `translate(${x}px, ${y}px)`;
-    document.querySelector('.orb2').style.transform = `translate(${-x * 0.5}px, ${-y * 0.5}px)`;
-  });
-
   // Highlight ConflictSense on load
   setTimeout(() => {
     const cs = document.getElementById('conflictsense');
@@ -2124,7 +2233,7 @@
     const data = new FormData(form);
 
     try {
-      const res = await fetch('https://formspree.io/f/anilthomas0601@gmail.com', {
+      const res = await fetch('https://formspree.io/f/xeedjdkr', {
         method: 'POST',
         body: data,
         headers: { 'Accept': 'application/json' }
