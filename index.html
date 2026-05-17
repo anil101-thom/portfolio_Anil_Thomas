@@ -1831,30 +1831,34 @@
     </div>
 
     <form class="inquiry-form" id="inquiryForm" onsubmit="handleSubmit(event)">
+      <!-- Formspree endpoint — replace YOUR_FORM_ID after signing up at formspree.io -->
+      <input type="hidden" name="_replyto" />
+      <input type="hidden" name="_subject" value="New Portfolio Inquiry — Anil Thomas" />
+
       <div class="field-row">
         <div class="field-group">
           <label>First Name</label>
-          <input type="text" placeholder="Jane" required />
+          <input type="text" name="first_name" placeholder="Jane" required />
         </div>
         <div class="field-group">
           <label>Last Name</label>
-          <input type="text" placeholder="Doe" />
+          <input type="text" name="last_name" placeholder="Doe" />
         </div>
       </div>
 
       <div class="field-group">
         <label>Email</label>
-        <input type="email" placeholder="jane@company.com" required />
+        <input type="email" name="email" placeholder="jane@company.com" required />
       </div>
 
       <div class="field-group">
         <label>Company / Organisation</label>
-        <input type="text" placeholder="Acme Corp (optional)" />
+        <input type="text" name="company" placeholder="Acme Corp (optional)" />
       </div>
 
       <div class="field-group">
         <label>Inquiry Type</label>
-        <select required>
+        <select name="inquiry_type" required>
           <option value="" disabled selected>Select a type…</option>
           <option>Full-time Role</option>
           <option>Freelance / Contract</option>
@@ -1866,15 +1870,18 @@
 
       <div class="field-group">
         <label>Message</label>
-        <textarea rows="4" placeholder="Tell me about the opportunity or project…" required></textarea>
+        <textarea rows="4" name="message" placeholder="Tell me about the opportunity or project…" required></textarea>
       </div>
 
-      <button type="submit" class="form-submit">
+      <button type="submit" class="form-submit" id="submitBtn">
         ⬡ Send Inquiry
       </button>
 
       <div class="form-success" id="formSuccess">
         ✓ Message sent! I'll get back to you within 24 hours.
+      </div>
+      <div class="form-success" id="formError" style="display:none; border-color: var(--accent3); background: rgba(255,107,53,0.05); color: var(--accent3);">
+        ✗ Something went wrong. Please email me directly at anilthomas0601@gmail.com
       </div>
     </form>
   </div>
@@ -2058,17 +2065,41 @@
     }, 2000);
   }, 2000);
 
-  // FORM SUBMIT
-  function handleSubmit(e) {
+  // FORM SUBMIT — Formspree
+  async function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
+    const form = e.target;
+    const btn = document.getElementById('submitBtn');
+    const successEl = document.getElementById('formSuccess');
+    const errorEl = document.getElementById('formError');
+
     btn.textContent = '⟳ Sending…';
-    btn.style.background = 'var(--accent2)';
-    setTimeout(() => {
-      e.target.reset();
-      btn.style.display = 'none';
-      document.getElementById('formSuccess').style.display = 'block';
-    }, 1200);
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('https://formspree.io/f/anilthomas0601@gmail.com', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.reset();
+        btn.style.display = 'none';
+        successEl.style.display = 'block';
+      } else {
+        throw new Error('Server error');
+      }
+    } catch (err) {
+      btn.textContent = '⬡ Send Inquiry';
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      errorEl.style.display = 'block';
+      setTimeout(() => errorEl.style.display = 'none', 5000);
+    }
   }
 
 
